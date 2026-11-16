@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Client-side aggregation only. No network access or mathematical verification.
 import { readFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 export function summarizeExam(input) {
   const fail = message => { throw new Error(message); };
@@ -48,7 +49,7 @@ export function summarizeExam(input) {
     warning: 'Aggregation validates ledger shape and arithmetic, not evidence truth, source identity or mathematical correctness.',
   };
 }
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1])) {
   try {
     if (!process.argv[2]) throw new Error('Usage: node scripts/summarize-exam.mjs <exam-ledger.json>');
     console.log(JSON.stringify(summarizeExam(JSON.parse(await readFile(process.argv[2], 'utf8'))), null, 2));
