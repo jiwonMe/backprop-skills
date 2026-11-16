@@ -1,6 +1,6 @@
 {
   "skill_name": "backprop",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "skill_repository": "jiwonMe/backprop-skills",
   "server_version_url": "https://hkipchhocpwdewfunpxl.supabase.co/functions/v1/mcp/skill-version",
   "github_version_url": "https://raw.githubusercontent.com/jiwonMe/backprop-skills/main/skills/backprop/assets/version.json",
