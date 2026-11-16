@@ -2,12 +2,12 @@
 
 ## 1. Seven Hard Invariants (Server-Enforced)
 
-1. **`IR_BOUNDARY_LEAK` (Invariant 1)**: `problem_ir` may reference ONLY stem-given symbols (`is_given_in_stem: true`). Never place intermediate substitution variables or solved unknown values in `problem_ir`.
+1. **`IR_BOUNDARY_LEAK` & `GOAL_TARGET_IS_SOLVED_CONSTANT` (Invariant 1)**: `problem_ir` may reference ONLY stem-given symbols (`is_given_in_stem: true`). Never place intermediate substitution variables or solved unknown values in `problem_ir`, and never put a solved constant expression (like `["Mul", 2, 3, 4]`) in `problem_ir.goal.target_ast`.
 2. **`NON_COMPOSITIONAL_AST` (Invariant 2)**: Never use shortcut string tags. Compose `Interval(lo, hi, leftClosedBool, rightClosedBool)`, `SetImage(fn, set)`, `RootSet(eqOrExpr, var, domainSet)`, `SetCardinality(set, "DISTINCT" | "WITH_MULTIPLICITY")`, and quantifiers `BinderForAll` / `BinderExists`.
 3. **`MISSING_IFF_OBLIGATION_PAIR` & `MISSING_DOMAIN_GUARD` (Invariant 3)**:
    - Every `Divide`, `Log`, `Ln`, even `Sqrt`/`Root`, and `Tan` with variable expressions requires `domain_guards` on `problem_ir.objects` AND a `DOMAIN_GUARD` obligation in `proof_ir.obligations`.
    - Every `LogicIff` assumption requires BOTH `IFF_SUFFICIENCY` and `IFF_NECESSITY` obligations.
-4. **`RESOLVED_EXPR_IS_CONSTANT` (Invariant 4)**: `resolved_object_ast` and `canonical_seeds[].canonical_ast` MUST be non-constant mathematical expressions/functions/equations, even when the final problem answer is a scalar number. Derive the scalar answer at the end via `BRIDGE_GOAL_EVALUATION`.
+4. **`RESOLVED_EXPR_IS_CONSTANT` & `TRIVIAL_LINEAR_SEED_ON_NONLINEAR_PROBLEM` (Invariant 4)**: `resolved_object_ast` and `canonical_seeds[].canonical_ast` MUST be non-constant mathematical expressions/functions/equations, and nonlinear problems MUST include their nonlinear base equations/functions (never just a linear sub-expression). Derive scalar answers at the end via `BRIDGE_GOAL_EVALUATION`.
 5. **`DIMENSION_DOMAIN_MISMATCH` (Invariant 5)**: Never assign `continuous_dimension > 0` when all remaining `unknown_parameters` belong to discrete `N` / `Z` domains.
 6. **Verification Monotonicity (Invariant 6)**: Never mark `GOAL_TERMINAL` as `"verified"` while any `OPEN` obligation remains, and never derive `"verified"` conclusions from `"unverified"`/`"unsupported"` premises. `is_delayed_pruning: true` is valid ONLY on `"refuted"` claims.
 7. **`ZERO_FLOAT_VIOLATION` (Invariant 7)**: No floating-point or scientific literals (`0.5`, `1.0`, `1e-3`) anywhere in JSON/JSONL. Use reduced coprime `["Rational", p, q]` (`q > 1`) for rationals and `0 | 1 | 2` integers for quantized friction/compression levels.
@@ -22,9 +22,15 @@
 
 Always query `https://www.kontology.com/mcp` (`search_entities`, `get_concept_overview`, `get_prerequisites`, `plan_problem`, `find_problems`) so every `concept:*`, `achievement_standard:*`, `solution_pattern:*`, `skill:*`, and `misconception:*` CURIE is active and within the declared course scope.
 
-## 3. 100% Connected Hypergraph Rules (`proof_ir`)
+## 3. 100% Connected Hypergraph & Trinity Essence CORE Rules (`proof_ir`)
 
 - In-degree 0 claims MUST be `ANCHOR` claims tied to `problem_ir` (`SYMBOL_DOMAIN | OBJECT_DEF | ASSUMPTION | BRANCH_CONDITION`).
+- Never jump directly from `ANCHOR` into `BRIDGE_GOAL_EVALUATION` (`SHALLOW_PROOF_SHORTCUT` forbidden), and never paste a `solution_pattern_id` from an unrelated unit (`ONTOLOGY_CONCEPT_MISMATCH` forbidden).
 - Exactly 1 claim must be `GOAL_TERMINAL` in `"ctx_root"` with out-degree 0.
 - Every claim and inference must be constructively reachable forward from `ANCHOR` claims AND backward from `GOAL_TERMINAL` (single connected DAG component).
 - Branching must use `BRIDGE_CASE_SPLIT_EXHAUSTIVE` → branch steps / `BRIDGE_CONTRADICTION_REFUTE` → `BRIDGE_CASE_MERGE` back into the parent context.
+- **Course-Aligned CORE Rule Dictionary**:
+  - **공통수학1**: `POLY_IDENTITY_COEFF_MATCH`, `REMAINDER_QUOTIENT_RECONSTRUCTION`, `FACTOR_THEOREM_ROOT_DESCENT`, `PARAM_INVARIANT_FACTORIZATION`, `PARTIAL_SYMMETRIC_REDUCTION`, `DEGREE_CANCELLATION_COLLAPSE`, `COMPLEX_REAL_IMAG_PERIODICITY`, `VIETA_ROOT_SYMMETRIC_EXISTENCE`, `CONJUGATE_ROOT_PARITY`, `DISCRIMINANT_SIGN_INTERSECTION`, `QUADRATIC_ROOT_LOCATION_PINNING`, `ABS_SIGN_INTERVAL_PARTITION`, `COMPLEMENT_INCLUSION_COUNTING`, `MATRIX_COMPONENT_NONCOMMUTATIVE_POWER`
+  - **공통수학2**: `COORD_DISTANCE_LOCUS_TANGENCY`, `SET_UNION_CARD_PINNING`, `TRUTH_SET_CONTRAPOSITIVE_CHAIN`, `AM_GM_EQUALITY_BOUND`, `BIJECTION_INVERSE_SYMMETRY`, `RATIONAL_IRRATIONAL_ASYMPTOTE_EXTREMUM`, `EXTREMAL_ELEMENT_PRINCIPLE`
+  - **대수**: `COMMON_BASE_LOG_ORDER_FLIP`, `MONOTONE_PIECEWISE_IMAGE_SCAN`, `INTEGER_LATTICE_SANDWICH`, `TRIG_QUADRANT_SYMMETRY_LAW`, `MODULAR_RESIDUE_PARTITION`, `TELESCOPING_SN_AN_BOUNDARY`, `RECURRENCE_BACKWARD_BRANCHING`
+  - **미적분Ⅰ·Ⅱ**: `INDETERMINATE_ZERO_FACTOR_PEELING`, `MOVING_CRIT_INTERVAL_SPLIT`, `INFLECTION_SYMMETRY_RATIO`, `FUNC_EQ_CAUCHY_ADDITIVE_SPLIT`, `ABS_FOLD_DIFF_CUSPS`, `COMPOSITE_ROOT_PREIMAGE_LAYER`, `INTEGRAL_VAR_LIMIT_DIFF_INIT`
