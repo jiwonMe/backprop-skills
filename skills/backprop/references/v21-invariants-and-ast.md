@@ -1,6 +1,8 @@
 # Backprop v2.1 MathJSON AST & 7 Invariants Quick Reference
 
-## 1. Seven Hard Invariants (Server-Enforced)
+## 1. Seven Invariant Families (Partial Automated Enforcement)
+
+Passing these checks is not a mathematical proof certificate. Follow the mandatory source/proof fidelity contract, including single-CORE and empty-bigram review, for every submission.
 
 1. **`IR_BOUNDARY_LEAK` & `GOAL_TARGET_IS_SOLVED_CONSTANT` (Invariant 1)**: `problem_ir` may reference ONLY stem-given symbols (`is_given_in_stem: true`). Never place intermediate substitution variables or solved unknown values in `problem_ir`, and never put a solved constant expression (like `["Mul", 2, 3, 4]`) in `problem_ir.goal.target_ast`.
 2. **`NON_COMPOSITIONAL_AST` (Invariant 2)**: Never use shortcut string tags. Compose `Interval(lo, hi, leftClosedBool, rightClosedBool)`, `SetImage(fn, set)`, `RootSet(eqOrExpr, var, domainSet)`, `SetCardinality(set, "DISTINCT" | "WITH_MULTIPLICITY")`, and quantifiers `BinderForAll` / `BinderExists`.
