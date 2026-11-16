@@ -35,7 +35,7 @@ Register both `backprop` and companion `kontology` HTTP MCP servers in your codi
 
 ## Included Skills
 
-- **[backprop](./skills/backprop/SKILL.md)** (`v0.3.0`):
+- **[backprop](./skills/backprop/SKILL.md)** (`v0.3.1`):
   - **Self-Update Check**: Calls `check_skill_update` via MCP or runs `node skills/backprop/scripts/check-update.mjs` against `https://hkipchhocpwdewfunpxl.supabase.co/functions/v1/mcp/skill-version` once per session and upgrades via `npx skills update backprop` when outdated.
   - **Milestone 1 (OCR)**: `ingest_ocr_json`, `find_import`, `get_document`, `list_problems`, `get_problem`.
   - **Milestone 2 (v2.1 IR & Provenance Engine)**: 6-turn server-guided state machine (`v21_start_session` → `v21_submit_problem_ir` → `v21_submit_obligations` → `v21_submit_proof_graph` → `v21_finalize_record` → `v21_match_lineage`) + fast-path `v21_ingest_jsonl_line`.
