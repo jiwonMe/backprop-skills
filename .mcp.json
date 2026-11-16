@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "backprop": {
+      "type": "http",
+      "url": "https://hkipchhocpwdewfunpxl.supabase.co/functions/v1/mcp"
+    },
+    "kontology": {
+      "type": "http",
+      "url": "https://www.kontology.com/mcp"
+    }
+  }
+}
