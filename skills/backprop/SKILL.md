@@ -221,6 +221,7 @@ When upgrading existing analyses, reuse stored source text only if it is reliabl
 Use this harness when the user asks for v3 semantic analysis or when the corpus needs proof-level method coverage. It is feature-gated by the deployment; a disabled or NOT_READY response is a real limitation, not a retry signal.
 
 ## 1. Session commands (via `v3_call`)
+- `{"command":"catalog"}` — list owned V3 model availability (metadata only: problem identity, AVAILABLE/UNAVAILABLE, session/revision/source revision, model/source hashes). No raw model or source text is returned.
 - `{"command":"source","problemId":"<uuid>"}` — resolve the current immutable source revision. Do not invent a revision.
 - `{"command":"begin","sessionId":"<id>","problemId":"<uuid>","sourceRevisionId":"<uuid>","request":{"requestId":"<id>","expectedRevision":0}}` — start a draft session.
 - `{"command":"model","sessionId":"<id>","request":{...},"input":{...}}` — submit raw math-v3 model JSON: source spans, declarations with origin/sourceRefs, conditions, ordered goal.
